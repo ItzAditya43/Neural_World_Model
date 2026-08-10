@@ -119,6 +119,20 @@ learned dynamics model.
   policy at all — sampling and re-scoring candidate action sequences
   every step is enough to produce goal-directed behavior.
 
+## Large-scale quantitative study
+
+The findings above come from the small demo run. A separate, much larger study — 180,000
+transitions, 30 training epochs, run on a Kaggle GPU (Tesla P100) — adds real quantitative
+evidence on top of it: a measured compounding-error curve, a planner-vs-baselines comparison,
+and an ablation over imagination budget. Full writeup, plots, and raw numbers:
+**[`kaggle_study/FINDINGS.md`](kaggle_study/FINDINGS.md)**.
+
+Headline results:
+
+- Reconstruction loss converges cleanly (0.0143 → 0.00147 over 30 epochs, train ≈ val, no overfitting) — after fixing a dead-ReLU training collapse the first attempt hit, documented in the report.
+- Compounding error is small through ~4 imagined steps, rises steeply through step 8, and saturates by step ~11 — the expected shape for a learned dynamics model rolled forward without correction.
+- The planner beats random action selection (30.8% vs 23.9% of steps within the goal band) but **loses to a trivial hand-coded heuristic** (77.1%) — a genuine negative result showing a correctly-trained world model isn't sufficient on its own; random-shooting MPC with no value function or policy prior is a weak planner when a strong simple prior exists that it can't represent.
+
 ## Visualization
 
 `exports/viewer.html` is a self-contained interactive page (open it
