@@ -1,0 +1,6 @@
+.venv/
+.pip-tmp/
+__pycache__/
+*.pyc
+data/
+checkpoints/
